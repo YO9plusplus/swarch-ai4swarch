@@ -38,15 +38,17 @@ evidence: system/online-boutique/protos/demo.proto, system/online-boutique/kuber
 
 | ผู้เรียก → ผู้ถูกเรียก | หลักฐานที่ AI อ้าง | ยืนยันแล้วหรือไม่ ✅ / ❌ / ❓ | สิ่งที่นิสิตพบ |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| checkoutservice -> cartservice| checkoutservice.yaml | ✅ | เจอการเรียกใช้ env CART_SERVICE_ADDR ใน checkoutservice main.go ผ่าน function GetCart และ EmptyCart |
+| checkoutservice -> emailservice| checkoutservice.yaml | ✅ | เจอผ่าน function SendOrderConfirmation ใน checkoutservice main.go |
+| frontend -> shippingservice| frontend.yaml | ✅ | เจอใน src/frontend/rpc.go บน function GetQuote |
+| recommendationservice -> productcatalogservice | recommendationservice.yaml | ✅ | เก็บผ่าน product_catalog_stub บน system/online-boutique/src/recommendationservice/recommendation_server.py เรียก ListProducts |
+| cartservice -> redis-cart | cartservice.yaml | ✅ | Startup.cs มีการเรียกใช้ REDIS_ADDR ไว้แล้ว |
 
-- **สิ่งที่ผิดหรือขาดหายไป** ใน Run B (dependency ที่ไม่มีจริง, dependency ที่ขาดไป, container ที่น่าสงสัย): …
+- **สิ่งที่ผิดหรือขาดหายไป** ใน Run B (dependency ที่ไม่มีจริง, dependency ที่ขาดไป, container ที่น่าสงสัย): แผนภาพมีแค่ Redis แต่ cartservice เลือกที่เก็บได้ 4 แบบ
 
 ## สะท้อนคิด (ข้อละ 2–3 ประโยค)
 
 1. เปรียบเทียบ A กับ B: agent **ไม่สามารถ**รู้อะไรได้จากไฟล์ `.proto` เพียงไฟล์เดียว และเพราะเหตุใด
+**ตอบ** 1a บอกได้แค่มี service อะไรบ้างและแต่ละตัวมี RPC อะไร, ไม่เห็น database, ไม่รู้ว่าใครเรียกใคร และไม่รู้ว่ามี frontend เพราะ .proto บอกแค่ว่า service ให้บริการอะไรแต่ไม่ได้บอกว่าใครใช้
 2. ข้อผิดพลาด**ข้อใดข้อหนึ่ง**ที่จะทำให้สมาชิกใหม่ของทีมเข้าใจผิดมากที่สุด หากเผยแพร่แผนภาพนี้โดยไม่ตรวจสอบ
+**ตอบ** แผนภาพมีแค่ Redis แต่ในไฟล์ Startup.cs รองรับที่เก็บ 4 แบบ ถ้าไม่ตั้ง REDIS_ADDR มันจะเก็บรายการสินค้าในตะก้าไว้ในหน่วยความจำตัวเอง ถ้า pod restart สินค้าที่เก็บไว้จะหายหมด
