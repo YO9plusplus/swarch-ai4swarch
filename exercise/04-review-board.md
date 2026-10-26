@@ -41,7 +41,7 @@
 **สิ่งที่ต้องแก้ไข:**
 1. ตัดสินใจเรื่อง outbox ให้ชัด จะเพิ่มที่เก็บข้อมูลให้ checkoutservice เพื่อทำ transactional outbox หรือจะยอมให้แต้มหายได้ เพราะตอนนี้ ADR ยังรับประกันแต้มแบบ exactly once ไม่ได้
 2. คุม rate limit ของ MailFast ทั้งระบบ ถ้า emailservice มีหลาย replica แต่ละตัวส่งได้ 50/s อัตรารวมจะเกิน limit อาจกำหนดให้มี replica เดียว และให้นับการ retry ใน limit ด้วย
-3. 3. กัน email ซ้ำด้วย order_id และกำหนด publish timeout จาก load test
+3. กัน email ซ้ำด้วย order_id และกำหนด publish timeout จาก load test
 
 **ใครยกประเด็นใด** ระบุทุกข้อกังวลที่คณะกรรมการอภิปราย
 
